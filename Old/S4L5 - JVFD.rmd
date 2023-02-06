@@ -1,0 +1,207 @@
+# Exercícios 4ª semana: L5 - Data Import
+
+```{r}
+library(tidyverse)
+library(tidyr)
+```
+
+## 1. Qual função você utilizaria para ler um arquivo cujos campos são separados por "|"
+
+A função que eu usaria é a "read_delim()", visto que com ela posso definir manualmente qual será o caractere utilizado para separar as colunas.
+
+Exemplo:
+```{r}
+fake_csv <- "\
+X|Y|Z
+1|2|3
+2|6|12
+4|18|48
+"
+read_delim(fake_csv, "|")
+```
+
+## 2. Além de `file`, `skip`, e `comment`, quais outros argumentos `read_csv()` e `read_tsv()` têm em comum?
+
+Segundo o [site do tidyr][LinkCSV], os outros argumentos que eles têm em comum são: basicamente todos.
+
+<!-- - file -->
+- col_names
+- col_types
+- col_select
+- id
+- locale
+- na
+- quoted_na
+- quote
+<!-- - comment -->
+- trim_ws
+<!-- - skip -->
+- n_max
+- guess_max
+- progress
+- name_repair
+- num_threads
+- show_col_types
+- skip_empty_rows
+- lazy
+
+[LinkCSV]: https://readr.tidyverse.org/reference/read_delim.html
+
+## 3. Quais são os argumentos mais importantes de `read_fwf()`?
+
+Pelo que vi e li, os argumentos que eu considerei mais importantes são:
+
+- file
+  - Necessário para informar qual será o conteúdo a ser lido.
+- col_positions
+  - É essencial, visto que a função em si gira em torno de ler conjuntos de dados com tamanhos fixos, então é necessário informar quais que são esses tamanhos.
+- col_select
+  - Permite selecionar quais as colunas desejadas para a leitura.
+- na
+  - Definine quais são os possiveis valores que deverão ser considerados como NA.
+- name_repair
+  - Define uma reparação automática aos nomes das colunas de acordo com algumas lógicas predefinidas.
+
+O grandiosíssimo ChatGPT discorda de mim e disse o seguinte:
+
+> A função read_fwf do pacote tidyverse em R tem os seguintes argumentos mais importantes:
+>
+> - file: o nome do arquivo ou uma conexão para ser lido.
+> - col_positions: uma lista de tuplas que especificam as larguras das colunas em caracteres.
+> - col_names: nomes das colunas para usar como rótulos de coluna ao ler o arquivo.
+> - skip: número de linhas a serem puladas antes de ler o arquivo.
+> - n_max: número máximo de linhas a serem lidas do arquivo.
+> - locale: o locale a ser usado para a leitura.
+> - na: strings que representam valores ausentes.
+>
+> Estes são os argumentos mais importantes e comuns usados na função read_fwf do pacote tidyverse em R.
+
+## 4. As vezes as strings em um CSV contém vírgulas. Para evitar que isso cause problema essas strings normalmente são colocadas entre aspas. Para ler o texto a seguir em um dataframe, qual argumento você deve especificar no `read_csv()`?
+
+```{r}
+"x,y\n1,'a,b'"
+```
+
+É necessário utilizar o argumento "quote" sendo igual à aspas simples, preferencialmente tendo um contrabarra antes de si para não causar possíveis problemas no código.
+
+```{r}
+test_string <- "x,y\n1,'a,b'"
+data <- read_csv(test_string, quote = "\'")
+data
+```
+
+## 5. Identifique o que está errado em cada uma dessas linhas e o que acontece se você rodar o código?
+
+### 5.1 O que tá errado e o que acontece se rodar?
+
+```{r}
+read_csv("a,b\n1,2,3\n4,5,6")
+```
+
+#### O que está errado é que...
+
+Existem apenas duas colunas na tabela, mas os dados apresentados estão espalhados em três colunas. Idealmente cada linha deveria conter a mesma quantidade de dados quanto a quantidade de colunas existentes, entretanto, a quantidade de colunas pode ser maior que a quantidade de dados observados em uma linha, mesmo que os valores que surjam sejam "Not Available".
+
+#### O que acontece é...
+
+O código ao ser rodado acabou anexando o terceiro valor que estaria nas colunas logo ao lado do valor anterior, assim gerando um novo número.
+
+### 5.2 O que tá errado e o que acontece se rodar?
+
+```{r}
+read_csv("a,b,c\n1,2\n1,2,3,4")
+```
+
+#### O que está errado é que...
+
+A quantidade de valores na primeira linha das observações é menor do que o esperado, assim, a terceira coluna terá o valor "NA", já na segunda linha das observações há um valor a mais, o que fará com que o 4 se anexe à direita do 3 e se torne o número 34.
+
+#### O que acontece é...
+
+Acontece exatamente como previ acima.
+
+### 5.3 O que tá errado e o que acontece se rodar?
+
+```{r}
+read_csv("a,b\n\"1")
+```
+
+#### O que está errado é que...
+
+Após as informações das colunas, "escapa-se" uma aspas duplas, o que provavelmente fará com que a coluna a, tenha na primeira linha o valor `"1` e o b tenha o valor NA.
+
+#### O que acontece é...
+
+Ué! Na verdade ele simplesmente ignorou o "1 e não criou nenhuma linha.
+
+### 5.4 O que tá errado e o que acontece se rodar?
+
+```{r}
+read_csv("a,b\n1,2\na,b")
+```
+
+
+#### O que está errado é que...
+
+Não me parece que haveria algo errado. O que pode talvez ser considerado errado é utilizar "a" e "b" como nomes das colunas e também colocar como dado na linha o nome dela mesma. Ou seja, A coluna "a" ter em si o valor "a" e a coluna "b" ter em si o valor "b".
+
+#### O que acontece é...
+
+É, como eu esperava: Não há erro em si, mas não parece ser um conjunto de dados usual para se colocar em uma coluna.
+
+### 5.5 O que tá errado e o que acontece se rodar?
+
+```{r}
+read_csv("a;b\n1;3")
+```
+
+#### O que está errado é que...
+
+provavelmente o ponto e vírgula pode dar algum problema. Só não sei ao certo que tipo de problema. Talvez ele considere como se o ponto e vírgula fizesse parte da palavra e então haveria a coluna "a;b" com o valor "1;3". Ou então considere que o ponto e vírgula está funcionando como se pulasse uma linha, então haveria a coluna "a" com os valores "b", "1" e "3". Mas provavelmente isso aconteceria se algum argumento específico para delimitador fosse passado, então eu voto no primeiro caso. Vejamos...
+
+#### O que acontece é...
+
+DING DING DING!!! Acertei uhul! De fato ele considera o ponto e vírgula como parte da palavra.
+
+## 6. Pratique seu aprendizado nesse dataset irritante!
+
+```{r}
+annoying <- tibble(
+    `1` = 1:10,
+    `2` = `1` * 2 + rnorm(length(`1`))
+)
+```
+
+### 6.1 Cole o código para extrair a variável chamada `1`
+
+```{r}
+select(annoying, `1`)
+```
+
+### 6.2 Cole o código para graficar um scaterplot `1` vs `2`
+
+```{r}
+annoying |>
+    ggplot(
+        data = annoying,
+        mapping = aes(
+            x = `1`,
+            y = `2`
+        )
+    ) +
+    geom_point()
+```
+
+### 6.3 Cole o código para criar uma nova coluna chamada `3` calculada a partir de `2` dividido por `1`
+
+```{r}
+mutate(annoying, `3` = `2` / `1`)
+```
+
+### 6.4 Cole o código para renomear as colunas para `one`, `two` e `three`
+
+```{r}
+annoying |>
+    mutate(`3` = `2` / `1`) |>
+    rename(`one` = `1`, `two` = `2`, `three` = `3`)
+```

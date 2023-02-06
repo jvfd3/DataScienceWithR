@@ -1,0 +1,48 @@
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+install.packages("janitor")
+library(janitor)
+```
+```{r}
+install.packages("arrow")
+library(arrow)
+```
+
+```{r}
+students <- read_csv("DataScienceWithR/students.csv", na = c("N/A", "", "NA"), show_col_types = FALSE)
+```
+```{r}
+# students
+students |>
+    janitor::clean_names() |>
+    mutate(
+        meal_plan = factor(meal_plan),
+        age = parse_number(if_else(age == "five", "5", age))
+    )
+```
+
+```{r}
+read_csv(
+    "a,b,c
+  1,2,3
+  4,5,6"
+)
+```
+
+```{r}
+read_csv(
+    "The first line of metadata
+    The second line of metadata
+    x,y,z
+    1,2,3",
+    skip = 2
+)
+```
+```{r}
+write_csv(students, "students-2.csv")
+read_csv("students-2.csv")
+```

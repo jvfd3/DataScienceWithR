@@ -1,0 +1,153 @@
+# Trabalho final
+
+Este trabalho se trata de um relatório de análise de dados para a disciplina vulgarmente chamada de "Introdução a Data Science". Ao longo do relatório serão expostas as motivações para a análise específica, a pergunta a ser respondida, uma amostra dos dados, a estrutura do gráfico esperado, os códigos realizados e o gráfico final encontrado.
+
+## Descrição do problema
+<!-- Explique breve e claramente a pergunta ou problema que vai investigar. -->
+
+A pergunta que viso responder é:
+
+> De que forma o valor do combustível tende a variar ao longo do governo das presidências?
+
+Suponho que o resultado final se aproxime de algo como este gráfico esboçado no [Paint 3D][LinkPaint]:
+
+![Esboço de gráfico](/TrabalhoFinal/GráficoEsperado-Grey.png)
+
+[LinkPaint]: https://apps.microsoft.com/store/detail/paint-3d/9NBLGGH5FV99
+
+## Apresentação dos dados
+<!-- Apresente os dados que vai utilizar e como pretende utilizá-los para abordar sua pergunta ou problema. -->
+
+Eu escolhi analisar a [Série Histórica de Preços de Combustíveis][LinkDados] disponibililizado pela "Agência Nacional do Petróleo, Gás Natural e Biocombustíveis - ANP".
+
+Eu escolhi esse dataset por apresentar várias variáveis que me permitem fazer diversas análises, há também milhares de observações realizadas, e por um longo período de tempo: um total de 18 anos. Além disso, os dados tratam de algo que tem sido relevante para o momento atual brasileiro: a alta preço da gasolina.
+
+[LinkDados]: https://dados.gov.br/dados/conjuntos-dados/serie-historica-de-precos-de-combustiveis-por-revenda
+
+Pretendo alcançar esta resposta ao realizar os seguintes passos:
+
+1. Importar apenas os dados relevantes de todos os arquivos.
+2. Conferir que há linhas com dados faltantes, se tiver, remover.
+3. Criar uma nova coluna que seja a média dos preços dos combustíveis, ou então apenas considerar o preço da gasolina
+4. Separar a coluna Data da Coleta em 3 colunas:
+  - Dia
+  - Mês
+  - Ano
+5. Separar os dados em períodos de 4 anos
+6. Traçar o gráfico do valor ao longo do tempo
+
+### Dataset escolhido
+
+O dataset escolhido conta com um total de 37 arquivos. Todos eles seguindo o seguinte padrão de nome "ca-AAAA-SS.csv"
+
+- "ca": se refere a "Combustível Automotivo"
+- AAAA: é um valor inteiro referente ao ano em questão, podendo ser um valor entre 2004 e 2022
+- "SS": é o valor referente ao semestre. É "01" caso se refira ao primeiro semestre ou "02" caso se refira ao segundo.
+
+O dataset varia em torno de 300 mil e 900 mil observações. Ele contém um total de 16 colunas, sendo elas:
+
+| Nome das colunas | Descrição | Valores possíveis |
+|---|---|---|
+| Regiao - Sigla | Código da região brasileira em que se está localizado o posto | "CO", "N", "NE", "S", "SE" |
+| Estado - Sigla | Código do estado brasileiro em que se está localizado o posto | Cada um dos códigos dos estados do Brasil. Ex.: "AC", "MA", "PA", etc. |
+| Municipio | Nome dos municípios | Ex.: "JAPARATUBA", "CARAGUATATUBA", "INDAIATUBA", "UBATUBA", etc. |
+| Revenda | Nome dos postos | "ZURANO AUTO POSTO LTDA", "MIMIM COMERCIO DE COMBUSTIVEIS EIRELI", "MINIANO COMBUSTIVEIS LTDA", etc. |
+| CNPJ da Revenda | CNPJ dos postos | Ex.: 00.001.974/0001-90 |
+| Nome da Rua |  |  |
+| Numero Rua |  |  |
+| Complemento |  |  |
+| Bairro |  |  |
+| Cep |  |  |
+| Produto |  |  |
+| Data da Coleta |  |  |
+| Valor de Venda |  |  |
+| Valor de Compra |  |  |
+| Unidade de Medida |  |  |
+| Bandeira |  |  |
+
+
+
+#### Colunas existentes
+
+- Regiao - Sigla ------ 
+- Estado - Sigla ------ XXX
+- Municipio ----------- XXX
+- Revenda ------------- XXX
+- CNPJ da Revenda ----- XXX
+- Nome da Rua --------- XXX
+- Numero Rua ---------- XXX
+- Complemento --------- XXX
+- Bairro -------------- XXX
+- Cep ----------------- XXX
+- Produto ------------- Diesel, etanol, gasolina, gnv
+- Data da Coleta ------ DD/MM/AAAA
+- Valor de Venda ------ D,DD|D,DDD
+- Valor de Compra ----- D,D(D|DD|DDD|DDDD)
+- Unidade de Medida --- XX
+- Bandeira ------------ XX
+
+#### Colunas desejadas
+
+- Regiao - Sigla ------ CO, N, NE, S, SE
+- Produto ------------- Diesel, etanol, gasolina, gnv
+- Data da Coleta ------ DD/MM/AAAA
+- Valor de Venda ------ D,DD|D,DDD
+- Valor de Compra ----- D,D(D|DD|DDD|DDDD)
+
+#### Nome dos documentos
+
+ca-2004-01
+CA-AAAA-SS
+
+## Preparação dos dados
+<!-- Descreva a obtenção, limpeza e transformações que foram necessárias para sua análise. Apresente o código utilizado nesse processo. -->
+
+## Análise dos dados
+<!-- Crie pelo menos uma visualização dos seus dados de acordo com o problema ou pergunta que está investigando. Explique o que está sendo visualizado, e interprete o gráfico. Essa é a parte mais importante do relatório. -->
+
+## Conclusão
+<!-- Ressalte os seus achados, aborde possíveis limitações e possíveis futuros desdobramentos da sua análise. Talvez -->
+
+## Códigos
+
+### Bibliotecas
+
+```{r}
+library(tidyr)
+library(tidyverse)
+```
+
+### Import
+
+```{r}
+```
+
+### Tidy
+
+```{r}
+```
+
+### Understand
+
+```{r}
+```
+
+#### Transform
+
+```{r}
+```
+
+#### Visualize
+
+```{r}
+```
+
+#### Model
+
+```{r}
+```
+
+### Communicate
+
+```{r}
+```

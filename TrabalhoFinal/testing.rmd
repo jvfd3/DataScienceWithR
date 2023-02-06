@@ -1,0 +1,30 @@
+# teste
+
+```{r}
+library(tidyr)
+library(tidyverse)
+```
+
+```{r}
+?WWWusage
+WWWusage
+?occupationalStatus
+occupationalStatus
+?WorldPhones
+?sleep
+?ability.cov
+ability.cov
+?cars
+```
+
+```{r}
+library(rio)
+dados <- import("https://dados.gov.br/dataset/exemplo/arquivo.csv")
+```
+
+```{r}
+link <- "http://dadosabertos.cnpq.br/pt_BR/dataset/bed8fae4-ce1d-433c-bb66-96051033a029/resource/c62837e9-4445-48a6-a782-e1b04eacab0d/download/resultado_dados_abertos_2020.zip"
+read_csv(link)
+```
+
+
