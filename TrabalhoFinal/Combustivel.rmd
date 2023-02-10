@@ -117,8 +117,10 @@ Antes de realizarmos quaisquer operações nos dados, primeiro precisamos instal
 **Instalando as bibliotecas**
 
 ```{r}
+options(repos = c(CRAN = "https://cran.r-project.org/"))
 install.packages("lubridate")
 install.packages("tidyverse")
+install.packages("png")
 ```
 
 **Carregando as bibliotecas**
@@ -126,6 +128,7 @@ install.packages("tidyverse")
 ```{r}
 library(tidyverse)
 library(lubridate)
+library(png)
 ```
 
 ### Import
@@ -176,7 +179,8 @@ Obs.: perceba que caso todos os blocos de código deste arquivos sejam executado
 [LinkRMD]: https://rmarkdown.rstudio.com/
 
 ```{r}
-data_path <- "TrabalhoFinal/FuelDB/"
+# data_path <- "TrabalhoFinal/FuelDB/"
+data_path <- "FuelDB/"
 ```
 
 ##### Finalizando a preparação
@@ -505,16 +509,18 @@ ggplot(transformed_db, aes(x = data, y = valor, color = presidentes)) +
 
 #### Salvar a imagem
 
-Por fim, salvemos a imagem 🖼️! Eu utilizei um índice (atualmente em 42) pois fui gerando diversas imagens de teste ao longo do processo de testes.
+Por fim, salvemos a imagem 🖼️! Eu utilizei um índice (atualmente em 44) pois fui gerando diversas imagens de teste ao longo do processo de testes.
 
 ```{r}
-index <- 42
+index <- 44
+# getwd() and change it is necessary using setwd(path)
 ```
 ```{r}
 index <- index + 1
 ggsave(
-  filename = paste0("meu_grafico_", index, ".png"),
-  path = "TrabalhoFinal/Imagens",
+  # filename = paste0("meu_grafico_", index, ".png"),
+  filename = paste0("meu_grafico_50.png"),
+  path = "",
   width = 8,
   height = 5,
   dpi = 300
@@ -527,11 +533,23 @@ Nesta etapa busco trazer parte da sequência de gráficos gerados em busca do gr
 
 #### Prova de conceito
 
-Este primeiro gráfico representa uma das primeiras tentativas de expor os dados tratados de forma coerente.
+Este primeiro gráfico representa uma das primeiras tentativas de expor parte dos dados tratados de forma coerente.
 
 ![Grafico](/TrabalhoFinal/Imagens/meu_grafico_1.png "Grafico")
 
 Mesmo que não chegue próximo do final, já conseguimos ver a tendência "natural" ao crescimento do preço do combustível.
+
+#### Etapas marcantes
+
+Aqui trago alguns dos avanços que considerei mais relevantes durante o desenvolvimento.
+
+##### Quantidade mais elevada de dados
+![Grafico](/TrabalhoFinal/Imagens/meu_grafico_10-por_dia.png "Grafico")
+##### Coloração por presidente
+![Grafico](/TrabalhoFinal/Imagens/meu_grafico_15.png "Grafico")
+##### Gráfico por tempo de governo
+![Grafico](/TrabalhoFinal/Imagens/meu_grafico_28.png "Grafico")
+
 
 ## Conclusão
 <!-- Ressalte os seus achados, aborde possíveis limitações e possíveis futuros desdobramentos da sua análise. Talvez -->
