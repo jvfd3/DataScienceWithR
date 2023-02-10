@@ -1,20 +1,9 @@
-# teste
+# testeasd
+
+## Codes
 
 ```{r}
-library(tidyr)
 library(tidyverse)
-```
-
-```{r}
-?WWWusage
-WWWusage
-?occupationalStatus
-occupationalStatus
-?WorldPhones
-?sleep
-?ability.cov
-ability.cov
-?cars
 ```
 
 ```{r}
@@ -27,4 +16,464 @@ link <- "http://dadosabertos.cnpq.br/pt_BR/dataset/bed8fae4-ce1d-433c-bb66-96051
 read_csv(link)
 ```
 
+```{r}
+teste1 <- "->"
+teste2 <- "<-"
+teste3 <- paste(teste1, teste2, sep = "")
+teste3
+```
 
+```{r}
+test_db <- "A;B;C\nX;1,1;X\nX;2,2;X\nX;3,3;X"
+read_delim(test_db, delim = ";")
+```
+
+```{r}
+test_db <- "A;B;C\nX;1,1;X\nX;2,2;X\nX;3,3;X"
+readed_table <- read.table(
+    sep = ";",
+    dec = ",",
+    header = TRUE
+)
+test <- tibble(readed_table)
+test
+```
+
+```{r}
+test_db_2 <- "A,B,C\nX,11/11/1111,X\nX,22/22/2222,X\nX,33/33/3333,X"
+a <- read_csv(
+    test_db_2
+)
+a
+```
+
+```{r}
+separate(a, B, into = c("dia", "mes", "ano"), sep = "/")
+```
+
+```{r}
+# Tentando fazer a listagem de nomes
+
+years <- c(2004:2021)
+semesters <- c("-01", "-02")
+expanded_grid <- expand.grid(years, semesters)
+all_file_codes <- sort(paste0(expanded_grid$Var1, expanded_grid$Var2))
+all_file_codes
+
+# result <- sort(paste(rep(years, each = 2), rep(semesters, times = 3), sep = ""))
+# result
+```
+
+```{r}
+# Testando validade de NA
+
+db_test <- data.frame(
+    col1 = c(1, 2, NA, NA),
+    col2 = c(NA, "b", NA, "d")
+)
+
+any(is.na(db_test))
+# Output: TRUE
+
+complete.cases(db_test)
+# Output: [1]  TRUE FALSE FALSE  TRUE
+```
+
+```{r}
+testing_db <- read_csv("A,B\n1,2\n1,NA\nNA,2\nNA,NA\n1,2\n")
+testing_db
+# testing_db |>
+#     filter_all(any_vars(is.na(.)))
+testing_db[complete.cases(testing_db), ]
+
+# filter(rowSums(is.na(.)) > 0)
+```
+
+```{r}
+library(tidyverse)
+library(janitor)
+years <- c(2004:2008)
+semesters <- c("-01", "-02")
+expanded_grid <- expand.grid(years, semesters)
+all_file_codes <- sort(paste0(expanded_grid$Var1, expanded_grid$Var2))
+sufix <- "ca-"
+extension <- ".csv"
+all_complete_file_codes <- paste0(sufix, all_file_codes, extension)
+data_path <- "TrabalhoFinal/FuelDB/"
+files_to_be_imported <- paste0(data_path, all_complete_file_codes)
+file_path <- files_to_be_imported
+
+interesting_cols <- c(12, 11, 13)
+imported_test_db <- read_csv2(
+    file = file_path,
+    # col_select = interesting_cols,
+    col_select = all_of(interesting_cols),
+    name_repair = "universal",
+    locale = locale(
+        decimal_mark = ","
+    ),
+    col_types = cols(
+        Data.da.Coleta = col_date(
+            format = "%d/%m/%Y"
+        ),
+        Produto = col_factor()
+    )
+)
+imported_test_db |>
+    pivot_wider(
+        names_from = Produto,
+        values_from = Valor.de.Venda
+    )
+```
+
+## Others
+
+#### Testando definição dos presidentes
+
+```{r}
+teste_data <- tibble(
+    data = seq(
+        as.Date("2004-01-01"),
+        as.Date("2022-12-31"),
+        by = "day"
+    )
+)
+teste_data <- teste_data |>
+    mutate(
+        ano = format(data, "%Y"),
+        mes = format(data, "%m"),
+        dia = format(data, "%d")
+    ) |>
+    mutate(
+        B = ifelse(
+            parse_integer(mes) >= 3 & parse_integer(mes) <= 10,
+            "férias",
+            "não férias"
+        )
+    )
+teste_data |> print(n = 365)
+```
+
+#### Agora testando por intervalos
+
+```{r}
+lula1 <- seq(as.Date("2003-01-01"), as.Date("2006-12-31"), by = "day")
+lula2 <- seq(as.Date("2007-01-01"), as.Date("2010-12-31"), by = "day")
+dilm1 <- seq(as.Date("2011-01-01"), as.Date("2014-12-31"), by = "day")
+dilm2 <- seq(as.Date("2015-01-01"), as.Date("2016-08-31"), by = "day")
+temer <- seq(as.Date("2016-09-01"), as.Date("2018-12-31"), by = "day")
+bolso <- seq(as.Date("2019-01-01"), as.Date("2022-12-31"), by = "day")
+presidentes_l <- list(
+    l1 = lula1,
+    l2 = lula2,
+    d1 = dilm1,
+    d2 = dilm2,
+    tm = temer,
+    bn = bolso
+)
+presidentes_c <- c(
+    lula1,
+    lula2,
+    dilm1,
+    dilm2,
+    temer,
+    bolso
+)
+```
+```{r}
+presidentes_l$l1
+```
+```{r}
+presidentes_c[1462]
+```
+
+#### Checar pertencimento
+```{r}
+get_president_by_date <- function(myDate) {
+    resultado <- case_when(
+        myDate %in% presidentes_l$l1 ~ "lula 1",
+        myDate %in% presidentes_l$l2 ~ "lula 2",
+        myDate %in% presidentes_l$d1 ~ "dilma 1",
+        myDate %in% presidentes_l$d2 ~ "dilma 2",
+        myDate %in% presidentes_l$tm ~ "temer",
+        myDate %in% presidentes_l$bn ~ "bolsonaro",
+        TRUE ~ "Outro"
+    )
+    return(resultado)
+}
+
+data_especifica <- as.Date("2001-02-01")
+get_president_by_date(data_especifica)
+# data_especifica %in% presidentes_l$bn
+```
+#### teste com interval
+```{r}
+library(tidyverse)
+
+lulinha <- interval(ymd("2003-01-01"), ymd("2006-12-31"))
+data_especifica <- as.Date("2004-02-01")
+data_especifica %within% lulinha
+```
+
+```{r}
+library(lubridate)
+library(dplyr)
+```
+
+#### Definição de presidentes por intervalos
+
+```{r}
+lula1 <- interval(ymd("2003-01-01"), ymd("2006-12-31"))
+lula2 <- interval(ymd("2007-01-01"), ymd("2010-12-31"))
+dilm1 <- interval(ymd("2011-01-01"), ymd("2014-12-31"))
+dilm2 <- interval(ymd("2015-01-01"), ymd("2016-08-31"))
+temer <- interval(ymd("2016-09-01"), ymd("2018-12-31"))
+bolso <- interval(ymd("2019-01-01"), ymd("2022-12-31"))
+presidentes_l <- list(
+    l1 = lula1,
+    l2 = lula2,
+    d1 = dilm1,
+    d2 = dilm2,
+    tm = temer,
+    bn = bolso
+)
+get_president_by_date <- function(myDate) {
+    resultado <- case_when(
+        myDate %within% presidentes_l$l1 ~ "lula 1",
+        myDate %within% presidentes_l$l2 ~ "lula 2",
+        myDate %within% presidentes_l$d1 ~ "dilma 1",
+        myDate %within% presidentes_l$d2 ~ "dilma 2",
+        myDate %within% presidentes_l$tm ~ "temer",
+        myDate %within% presidentes_l$bn ~ "bolsonaro",
+        TRUE ~ "Outro"
+    )
+    return(resultado)
+}
+```
+
+#### Checar pertencimento
+```{r}
+data_especifica <- as.Date("2019-02-01")
+get_president_by_date(data_especifica)
+```
+
+#### subtração de datas
+
+```{r}
+minha_data_base <- ymd("0000-01-01")
+minha_data_1 <- ymd("2004-01-01")
+minha_data_2 <- ymd("2004-02-01")
+data_dif <- minha_data_2 - minha_data_1
+data_dif
+data_3 <- minha_data_base + data_dif
+data_3
+```
+
+#### appendando c
+
+```{r}
+abluble <- c("1", "2")
+abluble <- append(abluble, "3")
+```
+
+#### Datas
+```{r}
+datinha <- as.Date("0001-01-01")
+datinha + datinha
+```
+
+```{r}
+data_inicial <- ymd("0001-01-01")
+impeacht <- transforming_db |>
+    filter(presidentes == "Dilma 2") |>
+    mutate(data = data_inicial + (data - min(data))) |>
+    arrange(desc(data)) |>
+    slice_head(n = 1) |>
+    select(data)
+impeacht_date <- transforming_db$data
+as.Date()
+```
+
+```{r}
+testing <- transformed_db |>
+    group_by(presidentes) |>
+    mutate(
+        data = data +
+            if_else(
+                presidentes == "Temer",
+                impeacht_date - as.Date(data_inicial),
+                as.Date(data_inicial) - as.Date(data_inicial)
+            )
+    )
+```
+```{r}
+testing |> filter(presidentes == "Temer")
+```
+
+## O que aconteceu com o Lula?
+
+```{r}
+transforming_db |>
+    select(-valor) |>
+    filter(presidentes == "Lula 1") |>
+    print(n = 600)
+```
+```{r}
+transformed_db |>
+    select(-valor) |>
+    filter(presidentes == "Lula 1") |>
+    print(n = 600)
+```
+```{r}
+minha_data_base <- ymd("0001-01-01")
+defasagem_do_lula <- (ymd("2004-05-10") - ymd("2003-01-01"))
+minha_data_base - minha_data_base
+```
+```{r}
+imported_db |>
+    distinct(Data.da.Coleta) |>
+    slice_max(Data.da.Coleta)
+```
+```{r}
+imported_db |>
+    distinct(Data.da.Coleta) |>
+    slice_min(Data.da.Coleta)
+```
+```{r}
+imported_db |>
+    distinct(Revenda) |>
+    arrange(desc(Revenda)) |>
+    print(n = 200)
+```
+```{r}
+years <- c(2004:2021)
+semesters <- c("-01", "-02")
+expanded_grid <- expand.grid(years, semesters)
+all_file_codes <- sort(paste0(expanded_grid$Var1, expanded_grid$Var2))
+all_file_codes <- append(all_file_codes, "2022-01")
+sufix <- "ca-"
+extension <- ".csv"
+all_complete_file_codes <- paste0(sufix, all_file_codes, extension)
+all_complete_file_codes
+```
+## Descartado
+
+### Obter a média dos preços por cada mês
+
+```{r}
+glimpse(tidying_db)
+a <- tidying_db |>
+    mutate(
+        ano = format(data, "%Y"),
+        mes = format(data, "%m"),
+        dia = format(data, "%d")
+    ) |>
+    group_by(ano, mes) |>
+    summarise(valor = mean(valor)) |>
+    ungroup()
+glimpse(a)
+```
+```{r}
+b <- a |>
+    mutate(data = as.Date(paste0(ano, "-", mes, "-", "01"))) |>
+    select(-ano, -mes)
+```
+```{r}
+glimpse(b)
+```
+### Obter a média dos preços por ano
+
+
+```{r}
+glimpse(tidying_db)
+a <- tidying_db |>
+    mutate(
+        ano = format(data, "%Y"),
+        mes = format(data, "%m"),
+        dia = format(data, "%d")
+    ) |>
+    group_by(ano) |>
+    summarise(valor = mean(valor)) |>
+    ungroup()
+glimpse(a)
+```
+```{r}
+b <- a |>
+    mutate(data = as.Date(paste0(ano, "-", "01", "-", "01"))) |>
+    select(-ano)
+```
+```{r}
+glimpse(b)
+```
+
+
+### Conversão de data
+
+```{r}
+transformed_db <- minimal2 |>
+    group_by(presidentes) |>
+    mutate(
+        ano = parse_integer(format(data, "%Y")),
+        mes = parse_integer(format(data, "%m"))
+        # dia = parse_integer(format(data, "%d"))
+    ) |>
+    # select(-data) |>
+    mutate(
+        semestre = (ano - 1) * 2 + if_else(mes < 7, 1, 2) - 1
+    ) |>
+    select(-valor) |>
+    # distinct(ano, mes) |>
+    print(n = 48)
+
+# transformed_db
+```
+
+### BASESTART
+```{r}
+library(janitor)
+library(tidyverse)
+library(lubridate)
+years <- c(2004:2021)
+semesters <- c("-01", "-02")
+expanded_grid <- expand.grid(years, semesters)
+all_file_codes <- sort(paste0(expanded_grid$Var1, expanded_grid$Var2))
+all_file_codes <- append(all_file_codes, "2022-01")
+sufix <- "ca-"
+extension <- ".csv"
+all_complete_file_codes <- paste0(sufix, all_file_codes, extension)
+data_path <- "TrabalhoFinal/FuelDB/"
+files_to_be_imported <- paste0(data_path, all_complete_file_codes)
+# file_path <- files_to_be_imported[3]
+file_path <- files_to_be_imported
+
+interesting_cols <- c(12, 11, 13)
+imported_db <- read_csv2(
+    file = file_path,
+    # col_select = interesting_cols,
+    # col_select = all_of(interesting_cols),
+    name_repair = "universal",
+    locale = locale(
+        decimal_mark = ","
+    ),
+    col_types = cols(
+        Data.da.Coleta = col_date(
+            format = "%d/%m/%Y"
+        ),
+        Produto = col_factor()
+    )
+)
+```
+
+```{r}
+tidying_db |>
+    filter(produto == "GASOLINA") |>
+    count()
+```
+```{r}
+tidying_db
+```
+
+# scale_x_date(
+#   date_breaks = "1 year",
+#   date_labels = "%Y"
+# ) +

@@ -1,0 +1,617 @@
+# Início
+
+```{r}
+install.packages("tidyverse")
+install.packages("palmerpenguins")
+```
+
+```{r}
+library("tidyverse")
+library(palmerpenguins)
+```
+
+```{r}
+?penguins
+```
+
+```{r}
+glimpse(penguins)
+```
+
+```{r}
+ggplot(
+    data = penguins,
+    mapping = aes(
+        x = flipper_length_mm,
+        y = body_mass_g,
+        color = species
+    )
+) +
+    geom_point()
+```
+
+```{r}
+ggplot(
+    data = penguins,
+    mapping = aes(
+        x = species,
+        y = bill_depth_mm,
+        # color=species
+    )
+) +
+    geom_boxplot()
+```
+
+```{r}
+# ggplot( data = penguins ) + geom_point()
+```
+
+```{r}
+ggplot(
+    data = penguins,
+    mapping = aes(
+        x = body_mass_g,
+        y = flipper_length_mm
+    )
+) +
+    geom_point()
+```
+
+```{r}
+ggplot(
+    data = penguins,
+    mapping = aes(
+        x = body_mass_g,
+        y = flipper_length_mm
+    )
+) +
+    geom_point(
+        na.rm = TRUE,
+    ) +
+    labs(
+        caption = "Os dados vêm do pacote palmerpenguins",
+    )
+```
+
+```{r}
+ggplot(
+    data = penguins,
+    mapping = aes(
+        x = flipper_length_mm,
+        y = body_mass_g,
+        color = bill_depth_mm,
+    ),
+) +
+    geom_point() +
+    geom_smooth(
+        na.rm = TRUE,
+    )
+```
+
+```{R}
+ggplot(
+    data = penguins,
+    mapping = aes(x = flipper_length_mm, y = body_mass_g, color = island)
+) +
+    geom_point() +
+    geom_smooth(se = FALSE)
+```
+
+```{R}
+ggplot(
+    data = penguins,
+    mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+    geom_point() +
+    geom_smooth()
+```
+
+```{R}
+ggplot() +
+    geom_point(
+        data = penguins,
+        mapping = aes(x = flipper_length_mm, y = body_mass_g)
+    ) +
+    geom_smooth(
+        data = penguins,
+        mapping = aes(x = flipper_length_mm, y = body_mass_g)
+    )
+```
+
+# Aula 4 - 16/01/23
+
+```{r}
+library(nycflights13)
+library(tidyverse)
+```
+
+```{r}
+# flights
+# glimpse(flights)
+# view(flights)
+glimpse(flights)
+```
+
+```{r}
+flights |>
+    filter(arr_delay > 120)
+
+flights |>
+    filter(month == 1, day == 1)
+
+flights |>
+    filter(month == 1 & day == 1)
+
+flights |>
+    filter(month == 1 | month == 2)
+```
+
+```{r}
+flights |>
+    filter(month == 1 | 2) # Ele considera o "| 2" como se fosse um true
+
+# arrange() ordena
+```
+
+```{r}
+flights |>
+    filter(dep_delay <= 10 & dep_delay >= -10) |>
+    arrange(desc(arr_delay))
+```
+
+```{r}
+flights |>
+    filter(abs(dep_delay) <= 10) |> # Minha tentativa
+    arrange(desc(arr_delay))
+
+flights |>
+    distinct(origin, dest)
+```
+
+```{r}
+flights |>
+    distinct()
+```
+
+Mudando colunas:
+
+Mutate()
+
+```{r}
+flights |>
+    mutate(
+        gain = dep_delay - arr_delay,
+        speed = distance / air_time * 60,
+        .before = 2
+    )
+
+flights |>
+    mutate(
+        gain = dep_delay - arr_delay,
+        speed = distance / air_time * 60,
+        .after = 3
+    )
+
+flights |>
+    mutate(
+        gain = dep_delay - arr_delay,
+        speed = distance / air_time * 60,
+        .after = 3,
+        .keep = "used" # apenas mantém as colunas usadas
+    )
+```
+
+select()
+
+permite selecionar quais as colunas desejadas
+
+de uma coluna a outra: select(nomeDaColuna1 : nomeDaColuna2)
+
+todas menos de uma a outra: select(!nomeDaColuna1 : nomeDaColuna2)
+
+?select
+
+```{r}
+flights |>
+    select(novoNome = nomeAntigo)
+flights |>
+    rename(...)
+flights |>
+    relocate()
+```
+
+```{r}
+flights |>
+    group_by(month) |>
+    summarize(
+        delay = mean(dep_delay, na.rm = TRUE)
+    )
+```
+
+```{r}
+flights |>
+    group_by(month) |>
+    summarize(
+        delay = mean(dep_delay, na.rm = TRUE)
+    )
+```
+
+slice_head(n = 1)
+
+slice_tail(n = 1)
+
+slice_min (x, n = 1)
+
+slice_max (x, n = 1)
+
+slice_sample (n = 1)
+
+summarize: vai resumir um grupo de linhas segundo um determinado conjunto de critérios/valores
+
+# Resolvendo a lista 3
+
+## 4.2.5 Exercícios sobre linhas
+
+### 1. Escreva o código para encontrar todos os voos que
+
+#### Tiveram um atraso de chegada de duas ou mais horas
+
+```{r}
+flights |>
+    filter(arr_delay >= 120) |>
+    relocate(arr_delay)
+```
+
+Voaram para Houston (IAH ou HOU)
+
+```{r}
+flights |>
+    filter(dest %in% c("IAH", "HOU")) |>
+    relocate(dest)
+```
+
+Foram operados pela United, American ou Delta
+
+```{r}
+flights |>
+    filter(carrier %in% c("DL", "AA", "UA")) |>
+    relocate(carrier)
+```
+
+Partiu no verão (julho, agosto e setembro)
+
+```{r}
+flights |>
+    filter(month %in% c(7, 8, 9)) |>
+    relocate(month)
+```
+
+Chegou com mais de duas horas de atraso, mas não saiu atrasado
+
+```{r}
+flights |>
+    filter(arr_delay > 120 & dep_delay <= 0) |>
+    relocate(arr_delay, dep_delay)
+```
+
+Atrasaram-se em pelo menos uma hora, mas compensaram mais de 30 minutos de voo - DÚVIDA
+
+```{r}
+flights |>
+    filter(dep_delay >= 60 & arr_delay < -30) |>
+    relocate(arr_delay, dep_delay) # chegou 30 min adiantado
+
+# flights |> filter(dep_delay >= 60 & arr_delay < -150) |> relocate(arr_delay, dep_delay) # opção 2: Finalizou com 30 min de adianto
+# flights |> filter(dep_delay >= 60 & dep_delay - arr_delay > 30) |> relocate(arr_delay, dep_delay) # Daniel?
+```
+
+### 
+
+2.  Ordene o dataset flights para encontrar os voos com os maiores atrasos de partida. Encontre os voos que partiram mais cedo pela manhã.
+
+```{r}
+flights |>
+    arrange(desc(dep_delay)) |>
+    relocate(dep_delay)
+```
+
+### Encontre os voos que partiram mais cedo pela manhã.
+
+```{r}
+flights |>
+    arrange(dep_time) |>
+    relocate(dep_time)
+```
+
+### 
+
+3.  Ordene o dataset flights para encontrar os voos mais rápidos (dica: é um cálculo)
+
+```{r}
+flights |>
+    mutate(speed = distance / air_time * 60) |>
+    arrange(desc(speed)) |>
+    relocate(speed, distance, air_time)
+```
+
+### 
+
+4.  Houve pelo menos um voo em cada dia do ano 2013?
+
+```{r}
+flights |>
+    filter(year == 2013) |>
+    group_by(month) |>
+    summarize(data = unique(day, na.rm = TRUE))
+```
+
+```{r}
+flights |>
+    distinct(day, month) |>
+    summarize(Tem365 = n() == 365)
+```
+
+5.  Quais voos viajaram a maior distância? Quais viajaram as distâncias mais curtas?
+
+```{r}
+flights |>
+    arrange(desc(distance)) |>
+    relocate(distance)
+```
+
+```{r}
+flights |>
+    arrange(distance) |>
+    relocate(distance)
+```
+
+Faz diferença a ordem que você usa \*filter()\* e \*arrange()\* se for usar os dois? Por que ou por que não? Considere os resultados e o trabalho que as funções vão ter que fazer.
+
+```{r}
+flights |>
+    arrange(desc(distance)) |>
+    relocate(distance)
+```
+
+## 
+
+4.3.5 Exercícios sobre colunas
+
+Compare `air_time` com `arr time - dep_time`. O que você espera ver? O que você viu? O que precisa fazer para consertar?
+
+Esperava ver duas colunas com valores iguais. Colunas com valores diferentes.
+
+```{r}
+# ?flights
+
+flights |>
+    mutate(arr_dep_time = arr_time - dep_time, dif = arr_dep_time - air_time) |>
+    # relocate (air_time, arr_dep_time, dif, .before = 1) |>
+    # select (air_time, arr_dep_time, dif) |>
+    arrange(desc(dif)) |>
+    select(
+        dif,
+        air_time,
+        sched_dep_time,
+        dep_time,
+        dep_delay,
+        sched_arr_time,
+        arr_time,
+        arr_delay
+    )
+```
+
+```{r}
+convert_time <- function(timeInHHMM) {
+    var <- 60 * (timeInHHMM %/% 100) + (timeInHHMM %% 100)
+    return(var)
+}
+flights |>
+    mutate(
+        arr_time_min = convert_time(arr_time),
+        dep_time_min = convert_time(dep_time),
+        calc_air_time = arr_time_min - dep_time_min,
+        diff = air_time - calc_air_time,
+        .keep = "used"
+    )
+```
+
+Compare `dep_time`, `sched_dep_time` e `dep_delay`. Como você espera que esses três números se relacionem?
+
+```{r}
+flights |>
+    mutate(
+        #  .keep = "used",
+        dep_delay_2 = dep_time - sched_dep_time,
+        strange_difference = dep_delay - dep_delay_2
+    ) |>
+    # arrange(strange_difference) |>
+    relocate(strange_difference, .before = 1) |>
+    arrange(
+        # desc(strange_difference)
+        # strange_difference
+    ) |>
+    filter(strange_difference == 40)
+```
+
+O que acontece se você incluir um nome de variável múltiplas vezes em uma chamada `select()`?
+
+```{r}
+flights |>
+    select(day, day, year, day, year)
+```
+
+O que a função `any_of()` faz? Como ela pode ser útil com o seguinte vetor?
+
+```{r}
+variables <- c("year", "month", "day", "dep_delay", "arr_delay")
+flights |>
+    select(any_of(variables))
+```
+
+Execute o seguinte código:
+
+```{r}
+select(flights, contains("TIME"))
+```
+
+Como as funções auxiliares (helper functions) de `select()` lidam com esse caso por padrão?
+
+Como podemos alterar esse padrão?
+
+## 
+
+4.4.6 Exercícios sobre grupos
+
+1\. Qual operadora tem os piores atrasos?
+
+Desafio: você consegue separar os efeitos de aeroportos ruins versus companhias aéreas ruins?
+
+Por que/por que não?
+
+Dica: pense em
+
+```{r}
+flights |>
+    mutate(delays = dep_delay + arr_delay) |>
+    group_by(carrier) |>
+    summarize(tot_delays = sum(delays, na.rm = TRUE)) |>
+    arrange(desc(tot_delays)) |>
+    slice_head(n = 3)
+```
+
+```{r}
+flights |>
+    group_by(carrier) |>
+    summarise(arr_delay = mean(arr_delay, na.rm = TRUE)) |>
+    arrange(desc(arr_delay)) |>
+    slice_head(n = 3)
+```
+
+```{r}
+flights |>
+    mutate(delays = dep_delay) |>
+    group_by(origin) |>
+    summarize(tot_delays = sum(delays, na.rm = TRUE)) |>
+    arrange(desc(tot_delays)) |>
+    slice_head(n = 3)
+```
+
+```{r}
+flights |>
+    mutate(delays = arr_delay) |>
+    group_by(dest) |>
+    summarize(tot_delays = sum(delays, na.rm = TRUE)) |>
+    arrange(desc(tot_delays)) |>
+    slice_head(n = 3)
+```
+
+```{r}
+flights |>
+    group_by(dest) |>
+    slice_tail(n = 1, order_by = arr_delay)
+```
+
+### 2. Encontre o voo mais atrasado para cada destino
+
+```{r}
+flights |>
+    mutate(delays = dep_delay + arr_delay, .keep = "all", .before = 1) |>
+    group_by(dest) |>
+    arrange(delays) |>
+    relocate("dest", .before = 1) |>
+    slice_head(n = 1)
+```
+
+### 3. Como os atrasos variam ao longo do dia? Ilustre a resposta com um gráfico.
+
+```{r}
+
+```
+
+```{r}
+flights |>
+    mutate(delays = dep_delay + arr_delay, new_dep_time = 60 * (dep_time %/% 100) + (dep_time %% 100)) |>
+    group_by(new_dep_time) |>
+    summarise(time_delay = mean(delays, na.rm = TRUE)) |>
+    ggplot(
+        mapping = aes(
+            x = new_dep_time,
+            y = time_delay,
+        )
+    ) +
+    geom_smooth(na.rm = TRUE)
+```
+
+### 4. O que acontece se você fornecer um n negativo para slice_min() e as suas amigas?
+
+```{r}
+?slice_head()
+flights |>
+    group_by(month) |>
+    arrange(day) |>
+    slice_head(n = -4)
+```
+
+### 5. Explique o que count() significa em termos dos verbos dplyr que você aprendeu. O que faz o argumento sort?
+
+```{r}
+?sort()
+```
+
+### 6. Suponha que você tem o seguinte data frame:
+
+```{r}
+df <- tibble(
+    x = 1:5,
+    y = c("a", "b", "a", "a", "b"),
+    z = c("K", "K", "L", "L", "K")
+)
+```
+
+```{r}
+df
+```
+
+```{r}
+df |>
+    group_by(y)
+```
+
+```{r}
+df |>
+    arrange(y)
+```
+
+```{r}
+df |>
+    group_by(y) |>
+    summarize(mean_x = mean(x))
+```
+
+```{r}
+df |>
+    group_by(y, z) |>
+    summarize(mean_x = mean(x))
+```
+
+```{r}
+df |>
+    group_by(y, z) |>
+    summarize(
+        mean_x = mean(x),
+        .groups = "drop"
+    )
+```
+
+```{r}
+df |>
+    group_by(y, z) |>
+    summarize(mean_x = mean(x))
+```
+
+```{r}
+df |>
+    group_by(y, z) |>
+    mutate(mean_x = mean(x))
+```

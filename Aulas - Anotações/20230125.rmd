@@ -1,0 +1,54 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+.
+
+```{r}
+household |>
+    pivot_longer(
+        cols = !family,
+        names_to = c(".value", "child"),
+        names_sep = "_",
+        values_drop_na = TRUE
+    ) |>
+    mutate(
+        child = parse_number(child)
+    )
+```
+
+```{r}
+cms_patient_experience
+```
+
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+diamonds
+```
+
+names_from: define as colunas
+
+values_from: define as tuplas
+
+linhas são definidas por padrão como aquela coluna que não é coluna nem valor. Se duas colunas forem definidas assim, ele vai ficar duplicando os valores.
+
+```{r}
+ggplot(
+    data = filter(table2, type == "cases"),
+    mapping = aes(
+        x = year,
+        y = count,
+        color = country
+    )
+) +
+    geom_line() +
+    scale_x_continuous(breaks = c(1999, 2000)) +
+    geom_point(
+        aes(color = country, shape = country)
+    )
+```

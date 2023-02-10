@@ -1,0 +1,52 @@
+# **L4 - Data Tidying**
+
+## 1. Descreva com palavras como as variáveis e observações são organizadas em cada um dos datasets \`table1\`, \`table2\`, \`table3\`, \`table4a\` e \`table4b\`
+
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+### 1.1. table1
+
+```{r}
+table1
+```
+
+### 1.2. table2
+
+```{r}
+table2
+```
+
+### 1.3. table3
+
+```{r}
+table3
+```
+
+### 1.4. table4a e table4b
+
+```{r}
+table4a
+```
+
+```{r}
+table4b
+```
+
+## 2. Em aula nós calculamos o \`rate\` para a \`table1\`.
+
+> Descreva com palavras e/ou pseudocódigo o processo que você faria para calcular \`rate\` das tabelas \`table2\` and \`table4a\` + \`table4b. Em cada caso você vai precisar fazer pelo menos essas quatro operações:a. Extrair o número de casos de tuberculose por pais em cada anob. Extrair a população correspondente de cada país em cada ano. Dividir os número de casos pela população e multiplicar por 10.000d. Armazenar esse resultado no lugar apropriadoVocê ainda não aprendeu todas as funções necessárias para realizar essas operações, mas ainda deve ser capaz de pensar nas transformações necessárias.
+
+### 2.1 Escreva aqui seu processo para calcular o rate da 'table2'
+
+### 2.2 Escreva aqui seu processo para calcular o rate da 'table4a' + table4b
+
+## 3. Em aula criamos um gráfico representando a mudança no número de casos ao longo do tempo por país. Recrie esse gráfico usando a table2 ao invés da table1
+
+### 3.1 Descreva aqui os passo em linhas gerais que você precisa fazer para construir esse gráfico com a \`table2\`
+
+### 3.2 Cole aqui o código para gerar o gráfico
+
+### 3.3 Faça aqui o upload da imagem do gráfico
